@@ -7,6 +7,8 @@ function fwrad = myRadon(img, theta)
 %
 % fwrad - Radon transform data (sinogram)
 
+theta_rad =  (90-theta)*pi/180;
+
 [img_x,img_y] = meshgrid(linspace(-1*size(img,1)/2+1/2,size(img,1)/2-1/2,size(img,1)),linspace(-1*size(img,1)/2+1/2,size(img,1)/2-1/2,size(img,1)));
 
 xmax = max(img_x,[],'all');
@@ -18,11 +20,10 @@ Dmax = sqrt(xmax^2 +ymax^2);
 fwrad = zeros(size(img_u,1),length(theta));
 
 for i = 1:length(theta)
-    theta_i = (90-theta(i))*pi/180;
-    img_p = img_u*cos(theta_i)-img_v*sin(theta_i);
-    img_q = img_u*sin(theta_i)+img_v*cos(theta_i);
+    img_p = img_u*cos(theta_rad(i))-img_v*sin(theta_rad(i));
+    img_q = img_u*sin(theta_rad(i))+img_v*cos(theta_rad(i));
     img_tr = interp2(img_x,img_y,img,img_p,img_q,'linear',0);
-    fwrad(:,theta(i)+1) = sum(img_tr,2);
+    fwrad(:,i) = sum(img_tr,2);
 end
 
 end
